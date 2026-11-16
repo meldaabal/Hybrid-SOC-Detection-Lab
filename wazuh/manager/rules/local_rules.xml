@@ -1,0 +1,86 @@
+<!-- Local rules -->
+
+<!-- Modify it at your will. -->
+<!-- Copyright (C) 2015, Wazuh Inc. -->
+
+<!-- Example -->
+<group name="local,syslog,sshd,">
+
+  <!--
+  Dec 10 01:02:02 host sshd[1234]: Failed none for root from 1.1.1.1 port 1066 ssh2
+  -->
+  <rule id="100001" level="5">
+    <if_sid>5716</if_sid>
+    <srcip>1.1.1.1</srcip>
+    <description>sshd: authentication failed from IP 1.1.1.1.</description>
+    <group>authentication_failed,pci_dss_10.2.4,pci_dss_10.2.5,</group>
+  </rule>
+
+</group>
+
+<group name="local,systemd,">
+  <rule id="100100" level="10">
+    <if_sid>40700</if_sid>
+    <program_name>systemd</program_name>
+    <match>Stopping suricata.service</match>
+    <description>SOC LAB - Suricata IDS service stopping detected</description>
+    <group>service_stop,ids,suricata,</group>
+  </rule>
+</group>
+
+<group name="local,sudo,">
+  <rule id="100101" level="8">
+    <if_group>sudo</if_group>
+    <user>^root$</user>
+    <description>SOC LAB - Suspicious sudo to ROOT detected</description>
+    <group>privilege_escalation,sudo,root,</group>
+  </rule>
+</group>
+
+<group name="local,windows,sysmon,">
+  <rule id="100102" level="8">
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.image" type="pcre2">(?i)\\powershell\.exe$</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)Get-LocalUser</field>
+    <description>SOC LAB - PowerShell local user discovery detected</description>
+    <group>process_creation,powershell,discovery,sysmon,</group>
+  </rule>
+</group>
+
+<group name="local,windows,sysmon,">
+  <rule id="100103" level="9">
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.image" type="pcre2">(?i)\\powershell\.exe$</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)Invoke-WebRequest</field>
+    <description>SOC LAB - Suspicious PowerShell web request detected</description>
+    <group>process_creation,powershell,network_activity,sysmon,</group>
+  </rule>
+</group>
+
+<group name="local,windows,sysmon,">
+  <rule id="100104" level="8">
+    <if_group>sysmon_event_13</if_group>
+    <field name="win.eventdata.targetObject">SOCLab</field>
+    <description>SOC LAB - Registry modification detected</description>
+    <group>registry_modification,windows,sysmon,</group>
+  </rule>
+</group>
+
+<group name="local,windows,sysmon,">
+  <rule id="100105" level="8">
+    <if_group>sysmon_event_11</if_group>
+    <field name="win.eventdata.targetFilename">SOCLab</field>
+    <description>SOC LAB - File creation detected in SOCLab directory</description>
+    <group>file_creation,windows,sysmon,</group>
+  </rule>
+</group>
+
+<group name="local,windows,sysmon,">
+  <rule id="100106" level="10">
+    <if_sid>61615</if_sid>
+    <field name="win.eventdata.targetObject">SOCLabPersistence</field>
+    <description>SOC LAB - Windows Run key persistence detected</description>
+    <group>persistence,registry,windows,sysmon,</group>
+  </rule>
+</group>
+

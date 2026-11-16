@@ -1,0 +1,40 @@
+# Local configuration and secrets
+telegram.conf
+client.keys
+.env
+.env.*
+*.env
+*.key
+*.pem
+*.p12
+*.pfx
+*.ppk
+*.keystore
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
+
+# Logs
+logs/
+*.log
+*.log.*
+eve.json
+alerts.json
+archives.json
+*.evtx
+*.pcap
+*.pcapng
+active_response_test.txt
+
+# Temporary files and caches
+tmp/
+temp/
+*.tmp
+*.temp
+*.swp
+*.backup
+*.bak
+*~
+__pycache__/
+*.pyc
